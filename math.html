@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastgele 4 İşlem Sorusu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1E90FF; /* Başlangıçta mavi arka plan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+            color: white; /* Yazı rengi beyaz */
+            transition: background-color 1s; /* Arka plan renk değişimi için yumuşak geçiş */
+        }
+        .question-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 300px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+            color: #333; /* Soru kutusunun rengi koyu gri */
+        }
+        input[type="number"] {
+            padding: 10px;
+            width: 80%;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.1); /* Hoverda buton büyüme efekti */
+        }
+        .modal {
+            display: none; /* Başlangıçta görünmez */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam siyah arka plan */
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .modal-content button {
+            background-color: #f44336; /* Kırmızı renk buton */
+        }
+        .modal-content button:hover {
+            background-color: #d32f2f;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="question-container" id="question-container">
+        <h2 id="question">Sorunuzu bekleyin...</h2>
+        <input type="number" id="answer" placeholder="Cevabınızı girin">
+        <button onclick="checkAnswer()">Cevapla</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3>Yanlış cevap!</h3>
+            <p>Lütfen tekrar deneyin.</p>
+            <button onclick="closeModal()">Tekrar Dene</button>
+        </div>
+    </div>
+
+    <script>
+        let correctAnswer;
+
+        function generateQuestion() {
+            const operations = ['+', '-', '*', '/'];
+            const randomOp = operations[Math.floor(Math.random() * operations.length)];
+            let num1, num2;
+
+            // Tam sayı sonuç veren bölme işlemi için kontrol
+            if (randomOp === '/') {
+                num2 = Math.floor(Math.random() * 9) + 1;
+                num1 = num2 * (Math.floor(Math.random() * 9) + 1);
+            } else {
+                num1 = Math.floor(Math.random() * 10) + 1;
+                num2 = Math.floor(Math.random() * 10) + 1;
+            }
+
+            let question = '';
+            switch (randomOp) {
+                case '+':
+                    correctAnswer = num1 + num2;
+                    question = `${num1} + ${num2}`;
+                    break;
+                case '-':
+                    correctAnswer = num1 - num2;
+                    question = `${num1} - ${num2}`;
+                    break;
+                case '*':
+                    correctAnswer = num1 * num2;
+                    question = `${num1} * ${num2}`;
+                    break;
+                case '/':
+                    correctAnswer = num1 / num2;
+                    question = `${num1} / ${num2}`;
+                    break;
+            }
+
+            document.getElementById("question").innerText = question;
+            document.getElementById("answer").value = '';
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value);
+            if (userAnswer === correctAnswer) {
+                changeBackgroundColor('green');
+                setTimeout(() => {
+                    changeBackgroundColor('#1E90FF');
+                    generateQuestion();
+                }, 1000);
+            } else {
+                changeBackgroundColor('red');
+                showModal();
+                setTimeout(() => {
+                    changeBackgroundColor('#1E90FF');
+                }, 1000);
+            }
+        }
+
+        function changeBackgroundColor(color) {
+            document.body.style.backgroundColor = color;
+        }
+
+        function showModal() {
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // İlk soruyu başlat
+        window.onload = generateQuestion;
+    </script>
+</body>
+</html>
